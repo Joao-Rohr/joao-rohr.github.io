@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="João Rohr — Back-End Developer especializado em Python, Django e sistemas escaláveis." />
+  <title>João Rohr — Back-End Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #070a12;
+      --surface:   #101622;
+      --surface-2: #151d2b;
+      --border:    #202a3a;
+      --border-2:  #2c3a4f;
+      --text:      #eef6ff;
+      --muted:     #92a3b9;
+      --dim:       #5c6b80;
+      --accent:    #00d9ff;
+      --accent-dk: #00a8cc;
+      --accent-bg: rgba(0,217,255,0.12);
+      --mono: 'Geist Mono', monospace;
+      --sans: 'Geist', sans-serif;
+      --nav-h: 52px;
+      --right-w: 280px;
+      --r: 18px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body { font-family: var(--sans); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; padding: 8px; }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: var(--sans); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+    /* ═══ NAV ═══ */
+    header {
+      height: var(--nav-h);
+      flex-shrink: 0;
+      width: 100%;
+      background: var(--bg);
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: var(--r) var(--r) 0 0;
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 0;
+      z-index: 10;
+    }
+    .flag-group { width: 104px; display: flex; gap: 8px; padding-right: 24px; flex-shrink: 0; }
+    .flag { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--dim); letter-spacing: .05em; cursor: pointer; transition: color .15s; }
+    .flag.on { color: var(--text); }
+
+    nav { display: flex; align-items: center; height: 100%; flex: 1; justify-content: center; }
+    .nb {
+      height: 100%; display: flex; align-items: center; padding: 0 28px;
+      font-size: 14.5px; color: var(--muted); background: none; border: none;
+      cursor: pointer; transition: color .15s; white-space: nowrap; letter-spacing: .01em;
+    }
+    .nb:hover { color: var(--text); }
+    .nb.on {
+      color: #041018; background: var(--accent);
+      border-radius: 8px; height: 32px; margin: auto 0;
+      font-weight: 700; padding: 0 24px;
+    }
+    .nb.on:hover { background: var(--accent-dk); }
+
+    .nav-icons { width: 104px; display: flex; justify-content: flex-end; gap: 4px; flex-shrink: 0; }
+    .nav-ic {
+      width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+      color: var(--muted); transition: color .15s; border-radius: 8px;
+    }
+    .nav-ic:hover { color: var(--text); }
+    .nav-ic svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* ═══ BODY LAYOUT ═══ */
+    .body-wrap {
+      flex: 1; display: flex; overflow: hidden;
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-top: 0;
+      border-radius: 0 0 var(--r) var(--r);
+    }
+
+    /* ═══ LEFT (scrollable content) ═══ */
+    .left {
+      flex: 1; overflow-y: auto; overflow-x: hidden;
+      display: flex; flex-direction: column;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .left::-webkit-scrollbar { width: 0; height: 0; }
+
+    /* ═══ RIGHT COLUMN (fixed photo + code) ═══ */
+    .right-col {
+      width: var(--right-w);
+      flex-shrink: 0;
+      position: relative;
+      border-radius: 0 0 var(--r) 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 36px 22px 28px;
+      gap: 22px;
+      overflow-y: auto;
+    }
+    .right-col::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--border);
+      border-radius: 999px;
+    }
+
+    /* Avatar */
+    .avatar {
+      width: 170px; height: 170px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--dim); font-family: var(--mono); font-size: 11px; text-align: center;
+    }
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    /* Code card */
+    .code-card {
+      width: 100%;
+      background: #282a36;
+      border: 1px solid #44475a;
+      border-radius: var(--r);
+      overflow: hidden;
+      font-family: var(--mono);
+      flex-shrink: 0;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+    .code-top {
+      display: flex; align-items: center; gap: 6px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #44475a;
+      background: #191a21;
+      border-radius: var(--r) var(--r) 0 0;
+    }
+    .cd { width: 10px; height: 10px; border-radius: 50%; }
+    .cd-r{background:#ff5f57} .cd-y{background:#febc2e} .cd-g{background:#28c840}
+    .code-fn { margin-left: auto; font-size: 10px; color: #6272a4; }
+    .code-body { padding: 16px; font-size: 11.5px; line-height: 1.9; overflow-x: auto; color: #f8f8f2; }
+    .code-body pre { margin: 0; }
+    .kw{color:#ff79c6} .fn{color:#50fa7b} .st{color:#f1fa8c} .nm{color:#8be9fd}
+
+    /* ═══ PANELS ═══ */
+    .panel {
+      display: none;
+      flex: 1;
+      padding: 0 72px 70px 72px;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 100%;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .82s ease, transform .82s ease;
+    }
+    .panel.on {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+      animation: panel-enter .82s cubic-bezier(.22, 1, .36, 1) both;
+    }
+    @keyframes panel-enter {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .panel, .panel.on {
+        animation: none;
+        transition: none;
+        transform: none;
+      }
+    }
+
+    /* Section label */
+    .slabel {
+      font-family: var(--mono); font-size: 13px; font-weight: 600;
+      color: var(--accent); letter-spacing: .12em; text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* ── ABOUT ── */
+    .hero-name {
+      font-size: clamp(52px, 6vw, 76px);
+      font-weight: 800; letter-spacing: -.04em; line-height: 1.0;
+      color: var(--text); margin-bottom: 28px;
+    }
+    .hero-desc { font-size: 16.5px; color: var(--muted); line-height: 1.85; margin-bottom: 14px; max-width: 620px; }
+    .hero-desc strong { color: var(--text); font-weight: 500; }
+
+    .lang-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 30px; }
+    .lbadge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--muted);
+      border: 1px solid var(--border-2); border-radius: 99px;
+      padding: 5px 14px;
+    }
+    .lbadge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+
+    .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      min-height: 46px; padding: 0 24px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+      transition: all .18s; white-space: nowrap;
+    }
+    .btn-p { background: var(--accent); color: #041018; }
+    .btn-p:hover { background: var(--accent-dk); transform: translateY(-1px); }
+    .btn-s { background: transparent; color: var(--muted); border: 1px solid var(--border-2); }
+    .btn-s:hover { color: var(--text); border-color: var(--accent); transform: translateY(-1px); }
+
+    /* ── SKILLS GRID ── */
+    .sh { font-size: clamp(32px,4vw,46px); font-weight: 800; letter-spacing: -.03em; color: var(--text); margin-bottom: 30px; }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .sk-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 22px 20px;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: background .15s;
+    }
+    .sk-card:hover { background: var(--surface-2); }
+    .sk-head { display: flex; align-items: center; gap: 12px; }
+    .sk-icon { width: 22px; height: 22px; flex-shrink: 0; }
+    .sk-name { font-size: 14.5px; font-weight: 700; color: var(--text); }
+    .sk-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ── LEADERSHIP ── */
+    .ld-intro { font-size: 16.5px; color: var(--muted); line-height: 1.8; margin-bottom: 28px; max-width: 720px; }
+    .ld-intro strong { color: var(--text); font-weight: 600; }
+    .ld-list { display: flex; flex-direction: column; gap: 10px; }
+    .ld-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 20px 24px;
+      display: flex; align-items: flex-start; gap: 18px;
+      transition: background .15s;
+    }
+    .ld-item:hover { background: var(--surface-2); }
+    .ld-ico {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: var(--accent-bg); border: 1px solid rgba(0,217,255,0.22);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .ld-ico svg { width: 20px; height: 20px; fill: var(--accent); }
+    .ld-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .ld-desc { font-size: 14.5px; color: var(--muted); line-height: 1.65; }
+
+    /* ── PROJECTS GRID ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .pj-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 22px;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: background .15s;
+    }
+    .pj-card:hover { background: var(--surface-2); }
+    .pj-card.wide { grid-column: 1 / -1; }
+    .pj-head { display: flex; align-items: center; gap: 10px; }
+    .pj-icon { width: 22px; height: 22px; flex-shrink: 0; fill: var(--accent); }
+    .pj-name { font-size: 15px; font-weight: 700; color: var(--text); }
+    .pj-desc { font-size: 14.5px; color: var(--muted); line-height: 1.65; }
+    .pj-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .tag {
+      font-family: var(--mono); font-size: 10.5px; color: var(--muted);
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 3px 9px;
+    }
+
+    /* ── CONTACT ── */
+    .contact-sub { font-size: 16.5px; color: var(--muted); margin-bottom: 30px; }
+    .ct-list { display: flex; flex-direction: column; gap: 10px; }
+    .ct-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 18px 24px;
+      display: flex; align-items: center; gap: 18px;
+      transition: background .15s;
+      min-height: 46px;
+    }
+    .ct-item:hover { background: var(--surface-2); }
+    .ct-ico {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--accent-bg);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ct-ico svg { width: 20px; height: 20px; fill: var(--accent); }
+    .ct-lbl { font-family: var(--mono); font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 3px; }
+    .ct-val { font-size: 14.5px; font-weight: 600; color: var(--text); }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 99px; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<header role="banner">
+  <div class="flag-group">
+    <span class="flag on">PT</span>
+    <span class="flag">EN</span>
+  </div>
+  <nav aria-label="Navegação">
+    <button class="nb on" data-p="about">Sobre mim</button>
+    <button class="nb" data-p="skills">Habilidades</button>
+    <button class="nb" data-p="leadership">Liderança</button>
+    <button class="nb" data-p="projects">Projetos</button>
+    <button class="nb" data-p="contact">Contato</button>
+  </nav>
+  <div class="nav-icons">
+    <a href="https://linkedin.com/in/joao.rohr" class="nav-ic" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- ═══ BODY ═══ -->
+<div class="body-wrap">
+
+  <!-- LEFT -->
+  <div class="left" id="left-scroll">
+
+    <!-- ABOUT -->
+    <section class="panel on" id="p-about" aria-labelledby="hero-n">
+      <p class="slabel">Back-End Developer &amp; AI Enthusiast</p>
+      <h1 class="hero-name" id="hero-n">João Rohr.</h1>
+      <p class="hero-desc">Um ano desenvolvendo sistemas back-end com <strong>Python</strong>, <strong>Django</strong> e automações.<br>Estudante de Ciência da Computação na <strong>Universidade do Estado do Rio de Janeiro (UERJ)</strong>.</p>
+      <p class="hero-desc">Experiência em arquitetura de sistemas, integração REST e manipulação de dados com SQL. Foco em entrega de serviços robustos e escaláveis - do desenvolvimento ao deploy.</p>
+      <div class="lang-badges">
+        <div class="lbadge"><span class="lbadge-dot"></span>Português — Nativo</div>
+        <div class="lbadge"><span class="lbadge-dot"></span>Inglês — Intermediário</div>
+      </div>
+      <div class="ctas">
+        <button class="btn btn-p" onclick="go('contact')">Entre em contato</button>
+        <a href="https://linkedin.com/in/joao.rohr" class="btn btn-s" target="_blank" rel="noopener">Ver LinkedIn ↗</a>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="panel" id="p-skills" aria-labelledby="sk-h">
+      <p class="slabel">02 — Habilidades</p>
+      <h2 class="sh" id="sk-h">Com o que eu trabalho.</h2>
+      <div class="skills-grid">
+
+        <!-- Python -->
+        <div class="sk-card">
+          <div class="sk-head">
+            <svg class="sk-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.887S0 5.789 0 11.969c0 6.18 3.403 5.96 3.403 5.96h2.032v-2.867s-.11-3.403 3.345-3.403h5.764s3.236.052 3.236-3.13V3.13S18.28 0 11.914 0zm-3.2 1.81a1.046 1.046 0 1 1 0 2.092 1.046 1.046 0 0 1 0-2.091z" fill="var(--accent)"/>
+              <path d="M12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.134S24 18.211 24 12.031c0-6.18-3.403-5.96-3.403-5.96h-2.032v2.867s.11 3.403-3.345 3.403H9.456s-3.236-.052-3.236 3.13V20.87S5.72 24 12.086 24zm3.2-1.81a1.046 1.046 0 1 1 0-2.092 1.046 1.046 0 0 1 0 2.091z" fill="var(--accent-dk)"/>
+            </svg>
+            <span class="sk-name">Python</span>
+          </div>
+          <p class="sk-desc">Scripts, automações, APIs e serviços back-end</p>
+        </div>
+
+        <!-- SQL -->
+        <div class="sk-card">
+          <div class="sk-head">
+            <svg class="sk-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 4.02 2 6.5v11C2 19.98 6.48 22 12 22s10-2.02 10-4.5v-11C22 4.02 17.52 2 12 2zm0 2c4.97 0 8 1.79 8 2.5S16.97 9 12 9 4 7.21 4 6.5 7.03 4 12 4zm8 13.5c0 .71-3.03 2.5-8 2.5s-8-1.79-8-2.5V15.3c1.73 1.1 4.7 1.7 8 1.7s6.27-.6 8-1.7v2.2zm0-5c0 .71-3.03 2.5-8 2.5s-8-1.79-8-2.5V10.3c1.73 1.1 4.7 1.7 8 1.7s6.27-.6 8-1.7v2.2z" fill="var(--accent)"/>
+            </svg>
+            <span class="sk-name">SQL &amp; Banco de Dados</span>
+          </div>
+          <p class="sk-desc">Modelagem, consultas otimizadas e design de armazenamento escalável</p>
+        </div>
+
+        <!-- Django -->
+        <div class="sk-card">
+          <div class="sk-head">
+            <svg class="sk-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.146 0h3.924v18.166c-2.013.382-3.491.535-5.096.535-4.791 0-7.288-2.166-7.288-6.32 0-4.002 2.65-6.6 6.753-6.6.637 0 1.121.05 1.707.203V0zm0 9.143a3.894 3.894 0 0 0-1.325-.204c-1.988 0-3.134 1.223-3.134 3.364 0 2.09 1.096 3.236 3.109 3.236.433 0 .79-.025 1.35-.102V9.143zM21.314 6.06v11.109c0 3.82-.28 5.655-1.096 7.236-.764 1.52-1.783 2.48-3.871 3.542l-3.645-1.73c2.088-1.012 3.107-1.895 3.769-3.262.687-1.394.916-3.01.916-7.27V6.061h3.927zM17.39 0h3.924v4.012H17.39V0z" fill="var(--accent)"/>
+            </svg>
+            <span class="sk-name">Django</span>
+          </div>
+          <p class="sk-desc">Desenvolvimento web robusto, ORM e administração de dados</p>
+        </div>
+
+        <!-- REST APIs -->
+        <div class="sk-card">
+          <div class="sk-head">
+            <svg class="sk-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 6l-1-2H5v17h2v-7h5l1 2h7V6h-6zm4 8h-4l-1-2H7V6h5l1 2h5v6z" fill="var(--accent)"/>
+            </svg>
+            <span class="sk-name">REST APIs</span>
+          </div>
+          <p class="sk-desc">Design, integração, autenticação e documentação RESTful</p>
+        </div>
+
+        <!-- Automação -->
+        <div class="sk-card">
+          <div class="sk-head">
+            <svg class="sk-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="var(--accent)"/>
+            </svg>
+            <span class="sk-name">Automação</span>
+          </div>
+          <p class="sk-desc">Scripts, pipelines agendados e integração de sistemas</p>
+        </div>
+
+        <!-- Docker -->
+        <div class="sk-card">
+          <div class="sk-head">
+            <svg class="sk-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.185.186v1.887c0 .102.083.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.302 2.61-2.172.942-1.072 1.502-2.274 1.917-3.325h.167c1.05 0 1.956-.39 2.374-1.017a2.3 2.3 0 00.354-.92c.04-.3.03-.606-.03-.9z" fill="var(--accent)"/>
+            </svg>
+            <span class="sk-name">Docker</span>
+          </div>
+          <p class="sk-desc">Containerização de serviços para ambientes consistentes de dev e produção</p>
+        </div>
+
+        <!-- Git -->
+        <div class="sk-card">
+          <div class="sk-head">
+            <svg class="sk-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M23.546 10.93L13.067.452c-.604-.603-1.582-.603-2.188 0L8.708 2.627l2.76 2.76c.645-.215 1.379-.07 1.889.441.516.515.658 1.258.438 1.9l2.658 2.66c.645-.223 1.387-.078 1.9.435.721.72.721 1.884 0 2.604-.719.719-1.881.719-2.6 0-.539-.541-.674-1.337-.404-1.996L12.86 8.955v6.525c.176.086.342.203.488.348.713.721.713 1.883 0 2.6-.719.721-1.889.721-2.609 0-.719-.719-.719-1.879 0-2.598.182-.18.387-.316.605-.406V8.835c-.217-.091-.424-.222-.604-.404-.541-.541-.677-1.336-.396-1.997L7.617 3.7.45 10.869c-.6.605-.6 1.584 0 2.189l10.48 10.477c.604.604 1.582.604 2.186 0l10.43-10.43c.605-.603.605-1.582 0-2.185" fill="var(--accent)"/>
+            </svg>
+            <span class="sk-name">Git &amp; GitHub</span>
+          </div>
+          <p class="sk-desc">Controle de versão, estratégias de branching e fluxos colaborativos</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LEADERSHIP -->
+    <section class="panel" id="p-leadership" aria-labelledby="ld-h">
+      <p class="slabel">03 — Liderança</p>
+      <h2 class="sh" id="ld-h">Além do código.</h2>
+      <p class="ld-intro">Atuo há 4 anos como professor particular de matemática, física e química, ajudando alunos a desenvolver raciocínio lógico e autonomia nos estudos. Ensinando tanto para ensino fundamental, médio e vestibulares.</p>
+      <div class="ld-list">
+
+        <div class="ld-item">
+          <div class="ld-ico">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+          <div>
+            <div class="ld-title">Mentoria acadêmica</div>
+            <div class="ld-desc">Orientação personalizada para desenvolvimento lógico e resolução de problemas.</div>
+          </div>
+        </div>
+
+        <div class="ld-item">
+          <div class="ld-ico">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+          </div>
+          <div>
+            <div class="ld-title">Didática &amp; Comunicação</div>
+            <div class="ld-desc">Explicação objetiva de conceitos técnicos e adaptação ao perfil de cada aluno.</div>
+          </div>
+        </div>
+
+        <div class="ld-item">
+          <div class="ld-ico">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 11.75A1.25 1.25 0 107.75 13 1.25 1.25 0 009 11.75zm6 0A1.25 1.25 0 1013.75 13 1.25 1.25 0 0015 11.75zM12 2A10 10 0 1022 12 10 10 0 0012 2zm0 18a8 8 0 118-8 8 8 0 01-8 8z"/></svg>
+          </div>
+          <div>
+            <div class="ld-title">Gestão independente</div>
+            <div class="ld-desc">Planejamento de aulas, acompanhamento de desempenho e organização de rotina acadêmica.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="panel" id="p-projects" aria-labelledby="pj-h">
+      <p class="slabel">04 — Projetos</p>
+      <h2 class="sh" id="pj-h">O que eu já construí.</h2>
+      <div class="projects-grid">
+
+        <div class="pj-card">
+          <div class="pj-head">
+            <svg class="pj-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.146 0h3.924v18.166c-2.013.382-3.491.535-5.096.535-4.791 0-7.288-2.166-7.288-6.32 0-4.002 2.65-6.6 6.753-6.6.637 0 1.121.05 1.707.203V0zm0 9.143a3.894 3.894 0 0 0-1.325-.204c-1.988 0-3.134 1.223-3.134 3.364 0 2.09 1.096 3.236 3.109 3.236.433 0 .79-.025 1.35-.102V9.143zM21.314 6.06v11.109c0 3.82-.28 5.655-1.096 7.236-.764 1.52-1.783 2.48-3.871 3.542l-3.645-1.73c2.088-1.012 3.107-1.895 3.769-3.262.687-1.394.916-3.01.916-7.27V6.061h3.927zM17.39 0h3.924v4.012H17.39V0z"/></svg>
+            <span class="pj-name">API REST com Django</span>
+          </div>
+          <p class="pj-desc">Desenvolvimento de uma API RESTful completa com autenticação, endpoints documentados e integração com banco de dados relacional.</p>
+          <div class="pj-tags"><span class="tag">Python</span><span class="tag">Django</span><span class="tag">REST</span><span class="tag">SQL</span></div>
+        </div>
+
+        <div class="pj-card">
+          <div class="pj-head">
+            <svg class="pj-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.914 0C5.82 0 6.2 2.656 6.2 2.656l.007 2.752h5.814v.826H3.887S0 5.789 0 11.969c0 6.18 3.403 5.96 3.403 5.96h2.032v-2.867s-.11-3.403 3.345-3.403h5.764s3.236.052 3.236-3.13V3.13S18.28 0 11.914 0zm-3.2 1.81a1.046 1.046 0 1 1 0 2.092 1.046 1.046 0 0 1 0-2.091zM12.086 24c6.094 0 5.714-2.656 5.714-2.656l-.007-2.752h-5.814v-.826h8.134S24 18.211 24 12.031c0-6.18-3.403-5.96-3.403-5.96h-2.032v2.867s.11 3.403-3.345 3.403H9.456s-3.236-.052-3.236 3.13V20.87S5.72 24 12.086 24zm3.2-1.81a1.046 1.046 0 1 1 0-2.092 1.046 1.046 0 0 1 0 2.091z"/></svg>
+            <span class="pj-name">Automação de Processos</span>
+          </div>
+          <p class="pj-desc">Script de automação para coleta, tratamento e exportação de dados, reduzindo trabalho manual e aumentando a eficiência operacional.</p>
+          <div class="pj-tags"><span class="tag">Python</span><span class="tag">Automação</span></div>
+        </div>
+
+        <div class="pj-card" style="grid-column:1/-1; max-width: 50%; margin: 0;">
+          <div class="pj-head">
+            <svg class="pj-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13.983 11.078h2.119a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.119a.185.185 0 00-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 00.186-.186V3.574a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m0 2.716h2.118a.187.187 0 00.186-.186V6.29a.186.186 0 00-.186-.185h-2.118a.185.185 0 00-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 00.184-.186V6.29a.185.185 0 00-.185-.185H8.1a.185.185 0 00-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 00.185-.186V6.29a.185.185 0 00-.185-.185H5.136a.186.186 0 00-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 00.186-.185V9.006a.186.186 0 00-.186-.186h-2.118a.185.185 0 00-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 00.185-.185V9.006a.185.185 0 00-.184-.186h-2.12a.186.186 0 00-.186.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 00.184-.185V9.006a.185.185 0 00-.184-.186h-2.12a.185.185 0 00-.185.186v1.887c0 .102.083.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 00-.75.748 11.376 11.376 0 00.692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 003.823-1.389c.98-.567 1.86-1.302 2.61-2.172.942-1.072 1.502-2.274 1.917-3.325h.167c1.05 0 1.956-.39 2.374-1.017a2.3 2.3 0 00.354-.92c.04-.3.03-.606-.03-.9z"/></svg>
+            <span class="pj-name">Ambiente Dockerizado</span>
+          </div>
+          <p class="pj-desc">Containerização de aplicação Django com Docker e Docker Compose, garantindo consistência entre os ambientes de desenvolvimento e produção.</p>
+          <div class="pj-tags"><span class="tag">Docker</span><span class="tag">Django</span><span class="tag">Python</span></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="panel" id="p-contact" aria-labelledby="ct-h">
+      <p class="slabel">05 — Contato</p>
+      <h2 class="sh" id="ct-h">Vamos conversar.</h2>
+      <p class="contact-sub">Aberto a projetos, colaborações e oportunidades. Entre em contato por qualquer canal abaixo.</p>
+      <div class="ct-list">
+
+        <a href="mailto:joaogustavopaesdacruzrohr@gmail.com" class="ct-item" aria-label="Enviar email">
+          <div class="ct-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="ct-lbl">E-mail</div>
+            <div class="ct-val">joaogustavopaesdacruzrohr@gmail.com</div>
+          </div>
+        </a>
+
+        <a href="https://wa.me/5521997181952" class="ct-item" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <div class="ct-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="ct-lbl">WhatsApp</div>
+            <div class="ct-val">(21) 99718-1952</div>
+          </div>
+        </a>
+
+        <a href="https://linkedin.com/in/joao.rohr" class="ct-item" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <div class="ct-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="ct-lbl">LinkedIn</div>
+            <div class="ct-val">linkedin.com/in/joao.rohr</div>
+          </div>
+        </a>
+
+        <div class="ct-item" aria-label="Localização">
+          <div class="ct-ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="ct-lbl">Localização</div>
+            <div class="ct-val">Maricá – Itaipuaçu, RJ</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /left -->
+
+  <!-- RIGHT COL -->
+  <div class="right-col" aria-hidden="true">
+    <div class="avatar">
+      <img src="profile-photo.png" alt="Foto de João Rohr" />
+    </div>
+    <div class="code-card">
+      <div class="code-top">
+        <span class="cd cd-r"></span>
+        <span class="cd cd-y"></span>
+        <span class="cd cd-g"></span>
+        <span class="code-fn">developer.py</span>
+      </div>
+      <div class="code-body">
+        <pre><code><span class="kw">class</span> <span class="fn">Developer</span>:
+  <span class="kw">def</span> <span class="fn">__init__</span>(<span class="nm">self</span>):
+    <span class="nm">self</span>.name     = <span class="st">"João"</span>
+    <span class="nm">self</span>.age      = <span class="st">20</span>
+    <span class="nm">self</span>.stack    = [
+      <span class="st">"Python"</span>,
+      <span class="st">"Django"</span>,
+      <span class="st">"SQL"</span>,
+    ]
+    <span class="nm">self</span>.location = <span class="st">"Maricá, RJ"</span>
+
+<span class="kw">if</span> __name__ == <span class="st">"__main__"</span>:
+  <span class="fn">Developer</span>()</code></pre>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /body-wrap -->
+
+<script>
+  function go(id) {
+    const panel = document.getElementById(`p-${id}`);
+    const current = document.querySelector('.panel.on');
+    if (!panel || current === panel) return;
+
+    document.querySelectorAll('.nb').forEach(b => { b.classList.remove('on'); b.removeAttribute('aria-current'); });
+    const btn = document.querySelector(`.nb[data-p="${id}"]`);
+
+    if (btn)   { btn.classList.add('on'); btn.setAttribute('aria-current','page'); }
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+    document.getElementById('left-scroll').scrollTop = 0;
+    void panel.offsetWidth;
+    panel.classList.add('on');
+  }
+  document.querySelectorAll('.nb[data-p]').forEach(b => b.addEventListener('click', () => go(b.dataset.p)));
+</script>
+</body>
+</html>
